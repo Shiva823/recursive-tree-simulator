@@ -328,7 +328,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 💡 Learning Outcomes
 
-By exploring this project, you will understand:
+By exploring this project, I understood:
 - How recursion creates complex patterns from simple rules
 - The relationship between mathematics and natural forms
 - Real-time graphics rendering techniques
@@ -338,13 +338,6 @@ By exploring this project, you will understand:
 
 ---
 
-## 🌟 Star This Repository!
-
-If you found this project helpful or interesting, please consider giving it a star ⭐
-
-It helps others discover the project and motivates further development!
-
----
 
 **Made with 🌳 and ❤️ for Computer Graphics education**
 
