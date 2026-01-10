@@ -2,7 +2,7 @@
 
 An interactive computer graphics visualization that demonstrates natural tree growth patterns using recursive algorithms and L-systems principles. Watch trees grow from seedlings to full maturity with realistic seasonal transformations and dynamic environmental effects.
 
-![Tree Simulator Demo](screenshot.png)
+<img src="screenshot.png" alt="Tree Simulator Demo" width="600">
 
 ## 🎯 Project Overview
 
@@ -183,19 +183,19 @@ Each season defines:
 ## 📸 Screenshots
 
 ### Spring Season - Fresh Growth
-![Spring Season](screenshots/SPRING.png)
+<img src="SPRING.png" alt="Spring Season" width="600">
 *Light green leaves representing new growth and renewal*
 
 ### Summer Season - Full Foliage
-![Summer Season](screenshots/SUMMER.png)
+<img src="SUMMER.png" alt="Summer Season" width="600">
 *Dense, dark green leaves at peak growth*
 
 ### Autumn Season - Falling Leaves
-![Autumn Season](screenshots/autumn.png)
+<img src="autumn.png" alt="Autumn Season" width="600">
 *Orange and red leaves with animated falling effect and wind simulation*
 
 ### Winter Season - Bare Branches
-![Winter Season](screenshots/WINTER.png)
+<img src="WINTER.png" alt="Winter Season" width="600">
 *Bare tree structure showcasing the recursive branching pattern*
 
 ## 🔬 Experimentation Ideas
