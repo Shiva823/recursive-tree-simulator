@@ -2,8 +2,6 @@
 
 An interactive computer graphics project that visualizes natural tree growth patterns using recursive algorithms and L-systems. Built with Python and Pygame.
 
-![Tree Simulator Demo](autumn.png)
-
 ## ✨ Features
 
 - **Recursive Tree Generation** - Uses L-system inspired algorithms to create realistic branching patterns
@@ -40,4 +38,3 @@ An interactive computer graphics project that visualizes natural tree growth pat
 ### Setup
 
 1. Clone the repository:
-```bash
