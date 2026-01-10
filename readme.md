@@ -183,19 +183,19 @@ Each season defines:
 ## 📸 Screenshots
 
 ### Spring Season - Fresh Growth
-<img src="SPRING.png" alt="Spring Season" width="600">
+<img src="screenshots/SPRING.png" alt="Spring Season" width="600">
 *Light green leaves representing new growth and renewal*
 
 ### Summer Season - Full Foliage
-<img src="SUMMER.png" alt="Summer Season" width="600">
+<img src="screenshots/SUMMER.png" alt="Summer Season" width="600">
 *Dense, dark green leaves at peak growth*
 
 ### Autumn Season - Falling Leaves
-<img src="autumn.png" alt="Autumn Season" width="600">
+<img src="screenshots/autumn.png" alt="Autumn Season" width="600">
 *Orange and red leaves with animated falling effect and wind simulation*
 
 ### Winter Season - Bare Branches
-<img src="WINTER.png" alt="Winter Season" width="600">
+<img src="screenshots/WINTER.png" alt="Winter Season" width="600">
 *Bare tree structure showcasing the recursive branching pattern*
 
 ## 🔬 Experimentation Ideas
