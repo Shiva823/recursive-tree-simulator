@@ -310,8 +310,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
     Shiva823
 - GitHub: [Shiva823](https://github.com/Shiva823)
-- Project Link: [https://github.com/Shiva823/recursive-tree-simulator](https://github.com/Shiva823/recursive-tree-simulator)
 
+    Aayushman Bajracharya
+- Github:[EXONITE](https://github.com/AayushmanBajracharya)
+
+- Project Link: [https://github.com/Shiva823/recursive-tree-simulator](https://github.com/Shiva823/recursive-tree-simulator)
 ## 🙏 Acknowledgments
 
 - **L-Systems Theory**: Aristid Lindenmayer's work on formal grammars for plant modeling
