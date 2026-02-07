@@ -23,7 +23,9 @@ SUNSET_SKY = (255, 99, 71)
 # Leaf colors for different seasons
 SPRING_LEAVES = [(144, 238, 144), (152, 251, 152), (124, 252, 0), (173, 255, 47), (186, 255, 201)]
 SUMMER_LEAVES = [(34, 139, 34), (0, 128, 0), (0, 100, 0), (46, 139, 87), (60, 179, 113)]
-AUTUMN_LEAVES = [(255, 140, 0), (255, 69, 0), (255, 99, 71), (178, 34, 34), (139, 69, 19), (205, 92, 0)]
+AUTUMN_LEAVES = [(255, 140, 0), (255, 69, 0), (255, 99, 71), (178, 34, 34), (139, 69, 19), (205, 92, 0),
+                 (255, 165, 0), (255, 127, 80), (210, 105, 30), (160, 82, 45), (218, 165, 32), 
+                 (184, 134, 11), (189, 83, 107), (205, 133, 63), (244, 164, 96)]  # Expanded palette
 SNOW_COLORS = [(255, 255, 255), (240, 248, 255), (230, 230, 250)]
 
 # Flower colors for ground
@@ -33,40 +35,110 @@ class FallingLeaf:
     def __init__(self, x, y, color, wind_strength=0):
         self.x = x
         self.y = y
-        self.color = color
-        self.size = random.randint(4, 8)
-        self.speed_y = random.uniform(0.3, 0.8)  # Much slower falling
-        self.speed_x = random.uniform(-0.1, 0.1)
+        # Slightly vary the color for natural look
+        self.color = tuple(max(0, min(255, c + random.randint(-20, 20))) for c in color)
+        self.size = random.randint(5, 10)
+        self.speed_y = random.uniform(0.4, 1.0)  # Gentle falling
+        self.speed_x = random.uniform(-0.2, 0.2)
         self.rotation = random.uniform(0, 360)
-        self.rotation_speed = random.uniform(-0.5, 0.5)  # Slow gentle rotation
+        self.rotation_speed = random.uniform(-1.0, 1.0)  # Gentle tumbling
         self.wind_strength = wind_strength
         self.wobble_offset = random.uniform(0, math.pi * 2)
+        self.tumble_offset = random.uniform(0, math.pi * 2)
         self.time = 0
+        self.leaf_type = random.choice(['maple', 'oval', 'pointed'])  # Different leaf shapes
+        self.scale_wobble = random.uniform(0, math.pi * 2)  # For 3D tumble effect
     
     def update(self, wind_strength):
-        self.time += 0.03  # Slower time progression
-        self.y += self.speed_y
-        # Gentle horizontal drift with subtle wind effect
-        self.x += self.speed_x + wind_strength * 0.15 + math.sin(self.time + self.wobble_offset) * 0.15
-        self.rotation += self.rotation_speed
+        self.time += 0.04
         
-        # Very subtle natural wobble
-        self.speed_x += random.uniform(-0.01, 0.01)
-        self.speed_x = max(-0.4, min(0.4, self.speed_x))
+        # Tumbling fall effect - speed varies as leaf tumbles
+        tumble_factor = 0.3 + 0.2 * math.sin(self.time * 2 + self.tumble_offset)
+        self.y += self.speed_y * tumble_factor
+        
+        # Gentle swaying motion
+        sway = math.sin(self.time * 1.5 + self.wobble_offset) * 0.4
+        self.x += self.speed_x + wind_strength * 0.2 + sway
+        
+        # Rotation for tumbling effect
+        self.rotation += self.rotation_speed * (0.8 + 0.4 * math.sin(self.time))
+        
+        # Subtle drift changes
+        self.speed_x += random.uniform(-0.02, 0.02)
+        self.speed_x = max(-0.5, min(0.5, self.speed_x))
+        
+        # Update scale wobble for 3D effect
+        self.scale_wobble += 0.05
     
     def draw(self, screen):
-        # Draw leaf as a rotated ellipse shape
+        # 3D tumble effect - leaf appears to flip
+        scale_x = 0.5 + 0.5 * abs(math.sin(self.scale_wobble))
+        
+        if self.leaf_type == 'maple':
+            self._draw_maple_leaf(screen, scale_x)
+        elif self.leaf_type == 'oval':
+            self._draw_oval_leaf(screen, scale_x)
+        else:
+            self._draw_pointed_leaf(screen, scale_x)
+    
+    def _draw_maple_leaf(self, screen, scale_x):
+        """Draw a maple-style leaf with points"""
         points = []
-        for i in range(6):
-            angle = self.rotation + i * 60
+        num_points = 7
+        for i in range(num_points):
+            angle = self.rotation + (i / num_points) * 360
             rad = math.radians(angle)
-            rx = self.size if i % 2 == 0 else self.size * 0.5
-            ry = self.size * 0.6 if i % 2 == 0 else self.size * 0.3
+            # Create maple leaf shape with alternating long and short points
+            if i % 2 == 0:
+                r = self.size * 1.2
+            else:
+                r = self.size * 0.5
+            px = self.x + r * math.cos(rad) * scale_x
+            py = self.y + r * math.sin(rad)
+            points.append((px, py))
+        
+        if len(points) >= 3:
+            pygame.draw.polygon(screen, self.color, points)
+            # Add stem
+            stem_angle = math.radians(self.rotation + 180)
+            stem_end = (self.x + self.size * 0.8 * math.cos(stem_angle) * scale_x,
+                       self.y + self.size * 0.8 * math.sin(stem_angle))
+            darker = tuple(max(0, c - 40) for c in self.color)
+            pygame.draw.line(screen, darker, (self.x, self.y), stem_end, 1)
+    
+    def _draw_oval_leaf(self, screen, scale_x):
+        """Draw an oval leaf shape"""
+        points = []
+        for i in range(8):
+            angle = self.rotation + i * 45
+            rad = math.radians(angle)
+            # Oval shape
+            rx = self.size * scale_x
+            ry = self.size * 0.6
             px = self.x + rx * math.cos(rad)
             py = self.y + ry * math.sin(rad)
             points.append((px, py))
+        
         if len(points) >= 3:
             pygame.draw.polygon(screen, self.color, points)
+    
+    def _draw_pointed_leaf(self, screen, scale_x):
+        """Draw a pointed leaf shape"""
+        rad = math.radians(self.rotation)
+        # Create pointed leaf with tip and base
+        tip = (self.x + self.size * 1.3 * math.cos(rad) * scale_x,
+               self.y + self.size * 1.3 * math.sin(rad))
+        base = (self.x - self.size * 0.5 * math.cos(rad) * scale_x,
+                self.y - self.size * 0.5 * math.sin(rad))
+        # Side points
+        perp_rad = rad + math.pi / 2
+        left = (self.x + self.size * 0.5 * math.cos(perp_rad) * scale_x,
+                self.y + self.size * 0.5 * math.sin(perp_rad))
+        right = (self.x - self.size * 0.5 * math.cos(perp_rad) * scale_x,
+                 self.y - self.size * 0.5 * math.sin(perp_rad))
+        
+        points = [tip, left, base, right]
+        pygame.draw.polygon(screen, self.color, points)
     
     def is_off_screen(self, height, width):
         return self.y > height or self.x < -50 or self.x > width + 50
@@ -488,11 +560,13 @@ def spawn_initial_leaves():
     """Spawn initial falling leaves for autumn - from tree canopy"""
     falling_leaves.clear()
     for tree in trees:
-        # Spawn fewer leaves initially, from tree canopy area
-        canopy_height = tree.trunk_length * 2
-        for _ in range(8):
-            x = tree.x + random.randint(-80, 80)
-            y = tree.y - canopy_height + random.randint(0, int(canopy_height * 0.5))
+        # Spawn more leaves initially at various heights for immediate effect
+        canopy_height = tree.trunk_length * 2.2
+        canopy_width = tree.trunk_length * 1.5
+        for _ in range(15):  # More initial leaves
+            x = tree.x + random.randint(int(-canopy_width), int(canopy_width))
+            # Spread leaves across more of the screen height
+            y = tree.y - canopy_height + random.randint(-20, int(canopy_height * 0.8))
             falling_leaves.append(FallingLeaf(x, y, random.choice(AUTUMN_LEAVES), wind_strength))
 
 def save_screenshot():
@@ -803,15 +877,17 @@ while running:
     
     # Update and draw falling leaves (autumn)
     if current_season == "autumn":
-        # Spawn new leaves gently from tree canopy area
-        if random.random() < 0.05 and len(falling_leaves) < 40:  # Slower spawn rate
+        # Spawn multiple leaves from tree canopy
+        if random.random() < 0.12 and len(falling_leaves) < 80:
             for tree in trees:
                 if tree.growth > 5:
-                    # Spawn from canopy area (top of tree)
-                    canopy_height = tree.trunk_length * 2  # Approximate tree height
-                    x = tree.x + random.randint(-80, 80)
-                    y = tree.y - canopy_height + random.randint(0, int(canopy_height * 0.6))
-                    falling_leaves.append(FallingLeaf(x, y, random.choice(AUTUMN_LEAVES), wind_strength))
+                    # Spawn 1-2 leaves at a time from canopy area
+                    for _ in range(random.randint(1, 2)):
+                        canopy_height = tree.trunk_length * 2.2
+                        canopy_width = tree.trunk_length * 1.5
+                        x = tree.x + random.randint(int(-canopy_width), int(canopy_width))
+                        y = tree.y - canopy_height + random.randint(0, int(canopy_height * 0.7))
+                        falling_leaves.append(FallingLeaf(x, y, random.choice(AUTUMN_LEAVES), wind_strength))
         
         for leaf in falling_leaves[:]:
             leaf.update(current_wind)
