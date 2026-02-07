@@ -128,6 +128,150 @@ class Flower:
         self.petal_count = random.randint(5, 8)
         self.sway_offset = random.uniform(0, math.pi * 2)
 
+class Butterfly:
+    """A butterfly that flutters around the trees"""
+    COLORS = [(255, 182, 193), (255, 105, 180), (255, 165, 0), (255, 255, 0), 
+              (147, 112, 219), (100, 149, 237), (255, 99, 71)]
+    
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.color = random.choice(self.COLORS)
+        self.wing_color = random.choice(self.COLORS)
+        self.size = random.randint(4, 8)
+        self.target_x = x
+        self.target_y = y
+        self.speed = random.uniform(0.3, 0.8)
+        self.wing_phase = random.uniform(0, math.pi * 2)
+        self.wing_speed = random.uniform(0.15, 0.25)
+        self.change_target_timer = 0
+        self.resting = False
+        self.rest_timer = 0
+    
+    def update(self, wind_strength, trees):
+        self.wing_phase += self.wing_speed
+        
+        if self.resting:
+            self.rest_timer -= 1
+            if self.rest_timer <= 0:
+                self.resting = False
+                self._pick_new_target(trees)
+            return
+        
+        self.change_target_timer -= 1
+        if self.change_target_timer <= 0:
+            self._pick_new_target(trees)
+        
+        # Move towards target with some randomness
+        dx = self.target_x - self.x
+        dy = self.target_y - self.y
+        dist = math.sqrt(dx * dx + dy * dy)
+        
+        if dist > 5:
+            self.x += (dx / dist) * self.speed + random.uniform(-0.3, 0.3) + wind_strength * 0.1
+            self.y += (dy / dist) * self.speed + random.uniform(-0.3, 0.3)
+        else:
+            # Reached target, maybe rest
+            if random.random() < 0.3:
+                self.resting = True
+                self.rest_timer = random.randint(60, 180)
+            else:
+                self._pick_new_target(trees)
+        
+        # Keep in bounds
+        self.x = max(50, min(WIDTH - 300, self.x))
+        self.y = max(80, min(HEIGHT - 150, self.y))
+    
+    def _pick_new_target(self, trees):
+        if trees and random.random() < 0.6:
+            # Target near a tree
+            tree = random.choice(trees)
+            self.target_x = tree.x + random.randint(-100, 100)
+            self.target_y = tree.y - tree.trunk_length + random.randint(-50, 100)
+        else:
+            # Random position
+            self.target_x = random.randint(100, WIDTH - 300)
+            self.target_y = random.randint(100, HEIGHT - 200)
+        self.change_target_timer = random.randint(120, 300)
+    
+    def draw(self, screen):
+        wing_offset = math.sin(self.wing_phase) * 4
+        
+        # Body
+        pygame.draw.ellipse(screen, (40, 40, 40), 
+                           (self.x - 2, self.y - 4, 4, 8))
+        
+        # Wings (left and right)
+        if not self.resting:
+            # Left wing
+            left_points = [
+                (self.x - 2, self.y),
+                (self.x - self.size - wing_offset, self.y - self.size),
+                (self.x - self.size - wing_offset, self.y + self.size // 2)
+            ]
+            pygame.draw.polygon(screen, self.color, left_points)
+            
+            # Right wing
+            right_points = [
+                (self.x + 2, self.y),
+                (self.x + self.size + wing_offset, self.y - self.size),
+                (self.x + self.size + wing_offset, self.y + self.size // 2)
+            ]
+            pygame.draw.polygon(screen, self.wing_color, right_points)
+        else:
+            # Folded wings when resting
+            pygame.draw.polygon(screen, self.color, 
+                              [(self.x, self.y - 3), (self.x - self.size, self.y - self.size), (self.x - 2, self.y + 2)])
+            pygame.draw.polygon(screen, self.wing_color,
+                              [(self.x, self.y - 3), (self.x + self.size, self.y - self.size), (self.x + 2, self.y + 2)])
+
+class Bird:
+    """A bird that flies across the sky"""
+    def __init__(self, x=None, direction=1):
+        self.direction = direction  # 1 = right, -1 = left
+        self.x = x if x else (0 if direction == 1 else WIDTH)
+        self.y = random.randint(50, 200)
+        self.speed = random.uniform(1.5, 3.0)
+        self.wing_phase = random.uniform(0, math.pi * 2)
+        self.wing_speed = random.uniform(0.1, 0.15)
+        self.size = random.randint(8, 15)
+        self.color = random.choice([(50, 50, 50), (70, 70, 70), (30, 30, 30), (100, 80, 60)])
+        self.y_wobble = random.uniform(0, math.pi * 2)
+    
+    def update(self, wind_strength):
+        self.wing_phase += self.wing_speed
+        self.y_wobble += 0.02
+        
+        self.x += self.speed * self.direction + wind_strength * 0.2
+        self.y += math.sin(self.y_wobble) * 0.3
+    
+    def draw(self, screen):
+        wing_angle = math.sin(self.wing_phase) * 0.4
+        
+        # Body
+        pygame.draw.ellipse(screen, self.color, 
+                           (self.x - self.size // 2, self.y - 3, self.size, 6))
+        
+        # Wings
+        wing_y_offset = math.sin(self.wing_phase) * 5
+        
+        # Left wing
+        pygame.draw.line(screen, self.color,
+                        (self.x - 2, self.y),
+                        (self.x - self.size, self.y - self.size // 2 - wing_y_offset), 2)
+        
+        # Right wing
+        pygame.draw.line(screen, self.color,
+                        (self.x + 2, self.y),
+                        (self.x + self.size, self.y - self.size // 2 - wing_y_offset), 2)
+        
+        # Head
+        head_x = self.x + (self.size // 2 + 2) * self.direction
+        pygame.draw.circle(screen, self.color, (int(head_x), int(self.y - 1)), 3)
+    
+    def is_off_screen(self):
+        return self.x < -50 or self.x > WIDTH + 50
+
 # Clock for controlling frame rate
 clock = pygame.time.Clock()
 FPS = 60
@@ -149,6 +293,10 @@ growth_speed = 0.05
 falling_leaves = []
 snowflakes = []
 
+# Flying creatures
+butterflies = []
+birds = []
+
 # Multiple trees
 trees = [Tree(WIDTH // 2, HEIGHT - 100, 120)]
 
@@ -161,7 +309,17 @@ def generate_ground_vegetation():
     grass_blades = [Grass(random.randint(0, WIDTH), HEIGHT - 100 + random.randint(0, 10)) for _ in range(150)]
     flowers = [Flower(random.randint(0, WIDTH), HEIGHT - 95 + random.randint(0, 15)) for _ in range(30)]
 
+def generate_butterflies():
+    """Spawn butterflies for spring/summer"""
+    global butterflies
+    butterflies = []
+    for _ in range(random.randint(5, 10)):
+        x = random.randint(100, WIDTH - 300)
+        y = random.randint(150, HEIGHT - 200)
+        butterflies.append(Butterfly(x, y))
+
 generate_ground_vegetation()
+generate_butterflies()  # Start with butterflies in spring
 
 # GUI Manager for sliders
 ui_manager = pygame_gui.UIManager((WIDTH, HEIGHT))
@@ -463,20 +621,26 @@ while running:
                 target_bg_color = (135, 206, 235)
                 falling_leaves.clear()
                 snowflakes.clear()
+                generate_butterflies()
             elif event.key == pygame.K_2:
                 current_season = "summer"
                 target_bg_color = (100, 149, 237)
                 falling_leaves.clear()
                 snowflakes.clear()
+                generate_butterflies()
             elif event.key == pygame.K_3:
                 current_season = "autumn"
                 target_bg_color = (255, 200, 150)
                 spawn_initial_leaves()
                 snowflakes.clear()
+                butterflies.clear()
+                birds.clear()
             elif event.key == pygame.K_4:
                 current_season = "winter"
                 target_bg_color = (200, 220, 240)
                 falling_leaves.clear()
+                butterflies.clear()
+                birds.clear()
             elif event.key == pygame.K_SPACE:
                 # Restart growth for all trees
                 for tree in trees:
@@ -666,6 +830,31 @@ while running:
             flake.draw(screen)
             if flake.is_off_screen(HEIGHT):
                 snowflakes.remove(flake)
+    
+    # Update and draw butterflies (spring/summer)
+    if current_season in ["spring", "summer"]:
+        # Spawn butterflies if not enough
+        if len(butterflies) < 5:
+            x = random.randint(100, WIDTH - 300)
+            y = random.randint(150, HEIGHT - 200)
+            butterflies.append(Butterfly(x, y))
+        
+        for butterfly in butterflies:
+            butterfly.update(current_wind, trees)
+            butterfly.draw(screen)
+    
+    # Update and draw birds (spring/summer, occasional)
+    if current_season in ["spring", "summer"]:
+        # Occasionally spawn a bird
+        if random.random() < 0.002 and len(birds) < 5:
+            direction = random.choice([1, -1])
+            birds.append(Bird(direction=direction))
+        
+        for bird in birds[:]:
+            bird.update(current_wind)
+            bird.draw(screen)
+            if bird.is_off_screen():
+                birds.remove(bird)
     
     # Draw UI panel background
     pygame.draw.rect(screen, (0, 0, 0, 180), (WIDTH - 250, 0, 250, 400))

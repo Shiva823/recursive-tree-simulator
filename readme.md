@@ -1,6 +1,6 @@
-# 🌳 Recursive Tree Growth Simulator
+# 🌳 Advanced Recursive Tree Growth Simulator
 
-An interactive computer graphics visualization that demonstrates natural tree growth patterns using recursive algorithms and L-systems principles. Watch trees grow from seedlings to full maturity with realistic seasonal transformations and dynamic environmental effects.
+An interactive computer graphics visualization that demonstrates natural tree growth patterns using recursive algorithms and L-systems principles. Watch trees grow from seedlings to full maturity with realistic seasonal transformations, dynamic environmental effects, wind simulation, and the ability to create entire forests!
 
 <img src="screenshot.png" alt="Tree Simulator Demo" width="600">
 
@@ -15,28 +15,40 @@ This project was developed as a mini-project for a Computer Graphics course to e
 - **Fractal Geometry**: Self-similar structures at different scales
 - **Configurable Parameters**: Adjust branching angles, recursion depth, and branch proportions
 - **Dynamic Growth**: Real-time tree generation with customizable complexity
+- **Asymmetric Natural Branches**: Adjustable randomness for organic, realistic tree shapes
+- **Multiple Trees**: Click anywhere to plant additional trees and create a forest!
 
 ### 🌸 Four Seasonal Modes
 
 #### Spring
-- Light green blooming leaves
+- Light green blooming leaves with realistic shapes
 - Fresh, vibrant color palette
+- Swaying grass and colorful flowers on the ground
+- **Colorful butterflies** fluttering around the trees
+- **Birds** flying across the sky
+- Animated sun with rays
 - Represents new growth and renewal
 
 #### Summer
 - Deep green full foliage
 - Dense leaf coverage
+- Lush grass and flowers
+- **Butterflies and birds** animate the scene
+- Bright blue sky with drifting clouds
 - Peak growth representation
 
 #### Autumn
-- Orange, red, and brown leaves
-- **Animated falling leaves** with physics simulation
-- Wind drift effects for realistic movement
+- Orange, red, and brown polygon-shaped leaves
+- **Animated falling leaves** gently descending from tree canopy
+- Subtle wind drift effects for realistic movement
+- Warm sunset-colored sky
 - Continuous leaf spawning and removal
 
 #### Winter
-- Bare branch structure
-- Showcases the underlying recursive tree skeleton
+- Bare branch structure with snow accumulation on branches
+- **Falling snowflakes** with gentle drift animation
+- Snow-covered ground
+- Moon and cloudy sky
 - Clean, minimalist aesthetic
 
 ### 📈 Animated Growth Visualization
@@ -44,6 +56,23 @@ This project was developed as a mini-project for a Computer Graphics course to e
 - **Smooth animation**: Frame-by-frame growth simulation
 - **Restart capability**: Reset and replay growth sequence
 - **Adjustable speed**: Control growth rate for detailed observation
+
+### �️ Wind Simulation
+- **Dynamic Wind System**: Adjustable wind direction and strength
+- **Natural Variation**: Subtle automatic wind fluctuations
+- **Responsive Elements**: Branches, leaves, grass, and flowers all respond to wind
+- **Real-time Control**: Wind slider for immediate adjustment
+
+### 🌸 Ground Vegetation
+- **Swaying Grass**: 150+ grass blades with wind response
+- **Animated Flowers**: Colorful flowers in spring and summer
+- **Snow Cover**: Ground turns white in winter
+
+### ☀️ Sky & Atmosphere
+- **Dynamic Sun/Moon**: Sun with animated rays, crescent moon at night
+- **Drifting Clouds**: Animated clouds that move with the wind
+- **Gradient Skies**: Beautiful sky gradients for each season
+- **Smooth Transitions**: Colors fade smoothly between seasons
 
 ### 🎛️ Interactive Parameter Controls
 
@@ -58,13 +87,36 @@ Real-time sliders for customization:
   - Lower values → Compact trees
   - Higher values → Elongated branches
 - **Trunk Length** (80 - 200): Initial trunk height
+- **Growth Speed** (10% - 100%): Control how fast trees grow
+- **Asymmetry** (0% - 40%): Add natural randomness to branch angles
+- **Wind** (-50 to +50): Control wind direction and strength
 
 ### 🍂 Physics-Based Particle System
-- Falling leaves in autumn with:
-  - Gravity simulation
-  - Wind drift effects
-  - Rotation animation
+- **Autumn Falling Leaves**:
+  - Gentle, slow descent from tree canopy
+  - Realistic leaf shapes (polygon-based)
+  - Subtle rotation and drift
+  - Wind-responsive movement
   - Screen boundary detection and recycling
+- **Winter Snowflakes**:
+  - Soft falling snow effect
+  - Gentle wobble animation
+  - Wind-responsive drift
+- **Spring/Summer Butterflies** 🦋:
+  - Colorful animated wings with fluttering effect
+  - Intelligent movement towards trees
+  - Rest behavior when landing
+  - Multiple vibrant color variations
+- **Flying Birds** 🐦:
+  - Silhouette birds flying across the sky
+  - Animated wing flapping
+  - Random spawn from screen edges
+  - Wind-affected flight paths
+
+### 📸 Screenshot & Export
+- **Save Screenshots**: Press S to save current scene
+- **Automatic Naming**: Timestamped files for easy organization
+- **Screenshots Folder**: All images saved to `screenshots/` directory
 
 ## 🎮 Controls
 
@@ -73,8 +125,12 @@ Real-time sliders for customization:
 | `1` | Switch to **Spring** season |
 | `2` | Switch to **Summer** season |
 | `3` | Switch to **Autumn** season (enables falling leaves) |
-| `4` | Switch to **Winter** season (bare branches) |
+| `4` | Switch to **Winter** season (snow effects) |
 | `SPACE` | **Restart growth animation** from beginning |
+| `Click` | **Plant a new tree** at mouse position |
+| `S` | **Save screenshot** to screenshots folder |
+| `R` | **Randomize** all tree shapes |
+| `C` | **Clear** all trees (keep main tree) |
 | **Right-side sliders** | Adjust tree parameters in real-time |
 
 ## 🚀 Installation & Setup
@@ -183,19 +239,19 @@ Each season defines:
 ## 📸 Screenshots
 
 ### Spring Season - Fresh Growth
-<img src="screenshots/SPRING.png" alt="Spring Season" width="600">
+<img src="screenshots/Spring1.png" alt="Spring Season" width="600">
 *Light green leaves representing new growth and renewal*
 
 ### Summer Season - Full Foliage
-<img src="screenshots/SUMMER.png" alt="Summer Season" width="600">
+<img src="screenshots/summer1.png" alt="Summer Season" width="600">
 *Dense, dark green leaves at peak growth*
 
 ### Autumn Season - Falling Leaves
-<img src="screenshots/autumn.png" alt="Autumn Season" width="600">
+<img src="screenshots/autumn1.png" alt="Autumn Season" width="600">
 *Orange and red leaves with animated falling effect and wind simulation*
 
 ### Winter Season - Bare Branches
-<img src="screenshots/WINTER.png" alt="Winter Season" width="600">
+<img src="screenshots/winter1.png" alt="Winter Season" width="600">
 *Bare tree structure showcasing the recursive branching pattern*
 
 ## 🔬 Experimentation Ideas
@@ -218,21 +274,39 @@ tree_simulator.py
 │
 ├── Imports & Initialization
 ├── Color Definitions (seasonal palettes)
-├── FallingLeaf Class
-│   ├── __init__: Initialize leaf properties
-│   ├── update: Apply physics (gravity, wind)
-│   └── draw: Render leaf particle
+├── Classes
+│   ├── FallingLeaf: Autumn leaf particle
+│   │   ├── __init__: Initialize leaf properties
+│   │   ├── update: Apply physics (gravity, wind)
+│   │   └── draw: Render leaf shape
+│   ├── Snowflake: Winter snow particle
+│   ├── Butterfly: Fluttering butterfly with AI movement
+│   ├── Bird: Flying bird across the sky
+│   ├── Tree: Tree instance with position and seed
+│   ├── Grass: Individual grass blade
+│   └── Flower: Ground flower decoration
 │
-├── draw_branch_animated: Recursive tree drawing
-├── spawn_initial_leaves: Autumn leaf generation
+├── Helper Functions
+│   ├── lerp_color: Smooth color transitions
+│   ├── draw_leaf_shape: Polygon-based leaf rendering
+│   ├── draw_branch_animated: Recursive tree drawing with wind
+│   ├── draw_grass: Swaying grass with wind response
+│   ├── draw_flower: Animated flower rendering
+│   ├── spawn_initial_leaves: Autumn leaf generation
+│   ├── generate_butterflies: Spawn butterflies for spring/summer
+│   └── save_screenshot: Export scene to PNG
+│
 ├── UI Elements: Sliders and labels
 │
 └── Main Game Loop
-    ├── Event Handling (keyboard, sliders)
-    ├── Growth Animation Update
-    ├── Season Selection
-    ├── Tree Rendering
-    ├── Particle System Update (autumn)
+    ├── Event Handling (keyboard, mouse, sliders)
+    ├── Wind Simulation Update
+    ├── Tree Growth Animation
+    ├── Season Color Transitions
+    ├── Sky Rendering (sun/moon, clouds)
+    ├── Ground & Vegetation Rendering
+    ├── All Trees Rendering
+    ├── Particle Systems (leaves, snow, butterflies, birds)
     └── Display Update
 ```
 
@@ -264,19 +338,23 @@ The modular structure allows easy addition of:
 - Maximum recursion depth limited to 13 for performance
 - Falling leaves use simple physics (no turbulence)
 - 2D visualization only (no 3D perspective)
-- Fixed window size (1000×700 pixels)
+- Fixed window size (1200×800 pixels)
 
 ## 🚧 Future Enhancement Ideas
 
+- [x] ~~Wind speed slider~~ ✅ Implemented!
+- [x] ~~Multiple trees~~ ✅ Implemented!
+- [x] ~~Screenshot export~~ ✅ Implemented!
+- [x] ~~Snow effects~~ ✅ Implemented!
+- [x] ~~Ground vegetation~~ ✅ Implemented!
+- [x] ~~Bird/butterfly particles in spring/summer~~ ✅ Implemented!
 - [ ] 3D tree generation with OpenGL
-- [ ] Export tree as SVG/PNG file
-- [ ] Wind speed slider for autumn
+- [ ] Export tree as SVG file
 - [ ] Day/night cycle with lighting
 - [ ] Multiple tree presets (oak, pine, palm, etc.)
 - [ ] Procedural texture mapping on branches
 - [ ] Sound effects for seasons
 - [ ] Save/load custom tree configurations
-- [ ] Bird/butterfly particles in spring/summer
 
 ## 🤝 Contributing
 
@@ -344,4 +422,4 @@ By exploring this project, I understood:
 
 **Made with 🌳 and ❤️ for Computer Graphics education**
 
-*Last Updated: January 2026*
+*Last Updated: February 2026*
